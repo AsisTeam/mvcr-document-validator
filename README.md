@@ -29,6 +29,8 @@ Document to be validated can be:
   - Czech passports
   - Czech gun licenses
   
+Original MVCR documentation to be found at: https://www.mvcr.cz/clanek/neplatne-doklady-ve-formatu-xml.aspx
+  
 ## Usage
 
 ```php

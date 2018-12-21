@@ -12,11 +12,7 @@ final class Requester implements IRequester
 	/** @var int */
 	private $timeout;
 
-	/**
-	 * Requester constructor.
-	 * @param int|NULL $timeout
-	 */
-	public function __construct(int $timeout = NULL)
+	public function __construct(?int $timeout = null)
 	{
 		$this->timeout = $timeout;
 	}
@@ -33,7 +29,7 @@ final class Requester implements IRequester
 			CURLOPT_URL => $url,
 		]);
 
-		if ($this->timeout !== NULL) {
+		if ($this->timeout !== null) {
 			curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
 		}
 
@@ -57,7 +53,7 @@ final class Requester implements IRequester
 	/**
 	 * @inheritdoc
 	 */
-	public function setTimeout(?int $timeout)
+	public function setTimeout(?int $timeout): IRequester
 	{
 		$this->timeout = $timeout;
 		return $this;

@@ -55,6 +55,15 @@ $response = (new Validator())->validate($document);
 // true if given document was found in registry of invalid documents
 $response->isInvalid();
 ``` 
+Or you can configure it as Nette Framework DI service
+```neon
+extensions:
+	mvcr.doc_validator: AsisTeam\MVCR\DocumentValidator\Bridges\Nette\DI\ValidatorExtension
+	
+mvcr.doc_validator:
+	timeout: 5
+
+```
 
 If any problem during doing the Request to API or parsing the response the `ResponseException` in being thrown.
 

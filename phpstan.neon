@@ -7,4 +7,3 @@ includes:
 parameters:
 	ignoreErrors:
 		- '#SimpleXMLElement|#'
-		- '#expects string, string|true given#'

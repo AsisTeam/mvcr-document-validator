@@ -21,7 +21,7 @@ class ValidatorTest extends TestCase
 
 	public function testIsValidPersonalIdCard(): void
 	{
-		$validator = new Validator('AsisTeam checker');
+		$validator = new Validator();
 		$response = $validator->validate(new Document('123456AB', DocumentType::PERSONAL_ID_CARD));
 
 		Assert::false($response->isInvalid());

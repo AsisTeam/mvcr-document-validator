@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<doklady_neplatne posl_zmena="den.měsíc.rok" pristi_zmeny="stručné upozornění">
+	<chyba spatny_dotaz="ano">text chyby</chyba>
+</doklady_neplatne>

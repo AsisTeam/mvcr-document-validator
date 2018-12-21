@@ -14,55 +14,26 @@ final class Validator
 
 	private const URL = 'https://aplikace.mvcr.cz/neplatne-doklady/doklady.aspx';
 
-	private const XML_START = '<?xml version="1.0" encoding="utf-8"?>';
+	private const XML_START = '<?xml version="1.0"';
 
-	/** @var string */
-	private $agent;
+	/** @var Requester */
+	private $requester;
 
-	public function __construct(string $agent = '')
+	public function __construct(?IRequester $requester = null)
 	{
-		$this->agent = $agent;
+		$this->requester = $requester ?? new Requester();
 	}
 
 	public function validate(Document $document): ValidityResult
 	{
-		$params = http_build_query(['dotaz' => $document->getDocumentNumber(), 'doklad' => $document->getType()]);
-
-		$curl = curl_init();
-		curl_setopt_array($curl, [
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_URL => self::URL . '?' . $params,
-			CURLOPT_USERAGENT => $this->agent,
+		$params = http_build_query([
+			'dotaz' => $document->getDocumentNumber(),
+			'doklad' => $document->getType(),
 		]);
 
-		$resp = curl_exec($curl);
-		if ($resp === false) {
-			throw new ResponseException(sprintf('Curl error: %s', curl_error($curl)));
-		}
+		$body = $this->requester->get(self::URL . '?' . $params);
 
-		curl_close($curl);
-
-		/** @var string $resp */
-		return $this->parseResponse($document, $this->parseXml($resp));
-	}
-
-	private function parseXml(string $data): SimpleXMLElement
-	{
-		$begin = substr($data, 0, strlen(self::XML_START));
-
-		if ($begin !== self::XML_START) {
-			throw new ResponseException(sprintf('Response does not contain valid xml: %s ...', $begin));
-		}
-
-		$xml = simplexml_load_string($data);
-
-		if ($xml === false) {
-			foreach (libxml_get_errors() as $error) {
-				throw new ResponseException(sprintf('Response does not contain valid xml string. Error: %s', $error));
-			}
-		}
-
-		return $xml;
+		return $this->parseResponse($document, $this->parseXml($body));
 	}
 
 	private function parseResponse(Document $document, SimpleXMLElement $xml): ValidityResult
@@ -90,6 +61,25 @@ final class Validator
 			$xml->odpoved->attributes()->aktualizovano !== null ? $this->toDateTime((string) $xml->odpoved->attributes()->aktualizovano) : null,
 			$xml->odpoved->attributes()->evidovano_od !== null ? $this->toDateTime((string) $xml->odpoved->attributes()->evidovano_od) : null
 		);
+	}
+
+	private function parseXml(string $data): SimpleXMLElement
+	{
+		$begin = substr($data, 0, strlen(self::XML_START));
+
+		if ($begin !== self::XML_START) {
+			throw new ResponseException(sprintf('Response does not contain valid xml: %s ...', $begin));
+		}
+
+		$xml = simplexml_load_string($data);
+
+		if ($xml === false) {
+			foreach (libxml_get_errors() as $error) {
+				throw new ResponseException(sprintf('Response does not contain valid xml string. Error: %s', $error));
+			}
+		}
+
+		return $xml;
 	}
 
 	private function toDateTime(string $val): DateTimeImmutable

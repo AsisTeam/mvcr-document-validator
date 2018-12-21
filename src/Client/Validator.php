@@ -36,6 +36,11 @@ final class Validator
 		return $this->parseResponse($document, $this->parseXml($body));
 	}
 
+	public function getRequester(): IRequester
+	{
+		return $this->requester;
+	}
+
 	private function parseResponse(Document $document, SimpleXMLElement $xml): ValidityResult
 	{
 		if (isset($xml->chyba)) {

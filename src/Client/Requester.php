@@ -9,9 +9,20 @@ final class Requester implements IRequester
 
 	private const SUCCESS_HEADERS_START = 'HTTP/1.1 200 OK';
 
+	/** @var int */
+	private $timeout;
+
 	/**
-	 * Makes HTTP GET request and returns response body
-	 * Or throws ResponseException on any error or non 200 response StatusCode
+	 * Requester constructor.
+	 * @param int|NULL $timeout
+	 */
+	public function __construct(int $timeout = NULL)
+	{
+		$this->timeout = $timeout;
+	}
+
+	/**
+	 * @inheritdoc
 	 */
 	public function get(string $url): string
 	{
@@ -21,6 +32,10 @@ final class Requester implements IRequester
 			CURLOPT_HEADER => 1,
 			CURLOPT_URL => $url,
 		]);
+
+		if ($this->timeout !== NULL) {
+			curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
+		}
 
 		$resp = curl_exec($curl);
 		if ($resp === false) {
@@ -37,6 +52,15 @@ final class Requester implements IRequester
 
 		// response body to be returned
 		return substr($resp, $headerSize);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setTimeout(?int $timeout)
+	{
+		$this->timeout = $timeout;
+		return $this;
 	}
 
 }

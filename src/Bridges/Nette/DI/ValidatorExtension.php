@@ -6,7 +6,7 @@ use AsisTeam\MVCR\DocumentValidator\Client\Requester;
 use AsisTeam\MVCR\DocumentValidator\Client\Validator;
 use Nette\DI\CompilerExtension;
 
-final class ValidatorExtension extends CompilerExtension
+class ValidatorExtension extends CompilerExtension
 {
 
 	/** @var int[] */

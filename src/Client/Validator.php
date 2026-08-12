@@ -12,7 +12,8 @@ use Throwable;
 final class Validator
 {
 
-	private const URL = 'https://aplikace.mvcr.cz/neplatne-doklady/doklady.aspx';
+	// Docs: https://mv.gov.cz/neplatne-doklady-ve-formatu-xml
+	private const URL = 'https://mv.gov.cz/app/nd/xml';
 
 	private const XML_START = '<?xml version="1.0"';
 
